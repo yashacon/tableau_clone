@@ -62,42 +62,42 @@ def fetch(request):
 
 
 ###------------Method to load Database from CSV File-------------###
-def load_data(request):
-    csv_filepathname=os.path.join(BASE_DIR,'Sample - Superstore.xls - Orders.csv')          #path to CSV File
-    djangoproject_path=BASE_DIR                                                              #path to django project
-    sys.path.append(djangoproject_path)
-    dataReader = csv.reader(open(csv_filepathname,encoding="utf8"), delimiter=',', quotechar='"') 
-    for row in dataReader:                                                                    #Iterating through CSV row-wise
-        if row[0] != 'Row ID': 
-            order=Orders()
-            order.ID=row[0]
-            order.Order_ID=row[1]
-            order.Order_Date=row[2]
-            order.Ship_Date=row[3]
-            order.Ship_Mode=row[4]
-            order.Customer_ID=row[5]
-            order.Customer_Name=row[6]
-            order.Segment=row[7]
-            order.Country=row[8]
-            order.City=row[9]
-            order.State=row[10]
-            order.Postal_Code=row[11]
-            order.Region=row[12]
-            order.Product_ID=row[13]
-            order.Category=row[14]
-            order.Sub_category=row[15]
-            order.Product_Name=row[16]
-            order.Sales=row[17]
-            order.Quantity=row[18]
-            order.Discount=row[19]
-            order.Profit=row[20]
-            order.Year=row[2][-4:]
+# def load_data(request):
+#     csv_filepathname=os.path.join(BASE_DIR,'Sample - Superstore.xls - Orders.csv')          #path to CSV File
+#     djangoproject_path=BASE_DIR                                                              #path to django project
+#     sys.path.append(djangoproject_path)
+#     dataReader = csv.reader(open(csv_filepathname,encoding="utf8"), delimiter=',', quotechar='"') 
+#     for row in dataReader:                                                                    #Iterating through CSV row-wise
+#         if row[0] != 'Row ID': 
+#             order=Orders()
+#             order.ID=row[0]
+#             order.Order_ID=row[1]
+#             order.Order_Date=row[2]
+#             order.Ship_Date=row[3]
+#             order.Ship_Mode=row[4]
+#             order.Customer_ID=row[5]
+#             order.Customer_Name=row[6]
+#             order.Segment=row[7]
+#             order.Country=row[8]
+#             order.City=row[9]
+#             order.State=row[10]
+#             order.Postal_Code=row[11]
+#             order.Region=row[12]
+#             order.Product_ID=row[13]
+#             order.Category=row[14]
+#             order.Sub_category=row[15]
+#             order.Product_Name=row[16]
+#             order.Sales=row[17]
+#             order.Quantity=row[18]
+#             order.Discount=row[19]
+#             order.Profit=row[20]
+#             order.Year=row[2][-4:]
             
-            if row[2][-7]=='/':
-                order.month=row[2][-6]                                             
-            else:
-                order.month=row[2][-7:-5]
-            order.save()                                                                          #saving in database
-            print(row[0])
-    return HttpResponse('success')
+#             if row[2][-7]=='/':
+#                 order.month=row[2][-6]                                             
+#             else:
+#                 order.month=row[2][-7:-5]
+#             order.save()                                                                          #saving in database
+#             print(row[0])
+#     return HttpResponse('success')
     
