@@ -6,5 +6,6 @@ urlpatterns = [
     path('input-data',views.userinput.as_view(),name='input-data'), 
     path('click-data',views.userclick.as_view(),name='click-data'), 
     path('logout-data',views.logout.as_view(),name='logout-data'), 
-    path('api-token-auth', views.obtain_expiring_auth_token, name='api_token_auth')
+    path('api-token-auth', views.obtain_expiring_auth_token, name='api_token_auth'),
+    path('register', views.RegisterView.as_view(), name='auth_register'),
 ]

@@ -6,10 +6,12 @@ from pathlib import Path
 import csv 
 from django.shortcuts import get_object_or_404
 import pytz
+from .serializers import *
 
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -49,7 +51,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
                 token.created = datetime.datetime.utcnow().replace(tzinfo=pytz.timezone('Asia/Kolkata'))
                 token.save()
 
-            return Response({'token': token.key,'username':serializer.validated_data['user'].username})
+            return Response({'token': token.key,'username':token.user.username})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
@@ -127,7 +129,7 @@ class userinput(APIView):
         user.Transaction=time_now
         user.inputs+=1
         user.save()
-        return Response(status=200)
+        return Response({'inputs':user.inputs},status=200)
 
 class userclick(APIView):
     permission_classes = (IsAuthenticated,)
@@ -138,20 +140,26 @@ class userclick(APIView):
         user.Transaction=time_now
         user.chart_click+=1
         user.save()
-        return Response(status=200)
+        return Response({'clicks':user.chart_click},status=200)
 
 class logout(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self,request):
         user=get_object_or_404(userdata,user=request.user)
         time_now=datetime.datetime.utcnow().replace(tzinfo=pytz.timezone('Asia/Kolkata'))
-        user.duration+=(time_now-user.Transaction).total_seconds()
-        user.Transaction=None
+        if user.Transaction is not None:
+            user.duration+=(time_now-user.Transaction).total_seconds()
+            user.Transaction=None
         user.save()
         token=Token.objects.get(user=request.user)
         token.delete()
-        return Response(status=200)
-        
+        return Response({'message':'Logged out {}'.format(token.user)},status=200)
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
+
 
 
 ###------------Method to load Database from CSV File-------------###
