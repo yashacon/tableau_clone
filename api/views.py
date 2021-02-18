@@ -31,6 +31,7 @@ class ExpiringTokenAuthentication(TokenAuthentication):
         utc_now = datetime.utcnow()
         utc_now = utc_now.replace(tzinfo=pytz.timezone('Asia/Kolkata'))
 
+        #if token is older than 24 hours
         if token.created < utc_now - timedelta(hours=24):
             token.delete()
             raise exceptions.AuthenticationFailed('Token has expired')
@@ -67,6 +68,8 @@ class fetch(APIView):
         stat = request.GET.get('stat', '')
         year = request.GET.get('year', '')
         user=get_object_or_404(userdata,user=request.user)
+
+        # managing user data such as duration and input clicks
         if user.Transaction is None:
             user.Transaction=datetime.datetime.utcnow().replace(tzinfo=pytz.timezone('Asia/Kolkata'))
             user.save()
@@ -120,6 +123,8 @@ class fetch(APIView):
         }
         return Response(context,status=200)
 
+
+### To update user input click count ###
 class userinput(APIView):
     permission_classes = (IsAuthenticated,)
     def put(self,request):
@@ -131,6 +136,7 @@ class userinput(APIView):
         user.save()
         return Response({'inputs':user.inputs},status=200)
 
+### To update user chart click count ###
 class userclick(APIView):
     permission_classes = (IsAuthenticated,)
     def put(self,request):
@@ -142,6 +148,7 @@ class userclick(APIView):
         user.save()
         return Response({'clicks':user.chart_click},status=200)
 
+### To logout user and updating user data ###
 class logout(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self,request):
@@ -155,6 +162,8 @@ class logout(APIView):
         token.delete()
         return Response({'message':'Logged out {}'.format(token.user)},status=200)
 
+
+### New user registraion view ###
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
