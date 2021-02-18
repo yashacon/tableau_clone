@@ -49,7 +49,7 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
                 token.created = datetime.datetime.utcnow().replace(tzinfo=pytz.timezone('Asia/Kolkata'))
                 token.save()
 
-            return Response([{'token': token.key},{'username':serializer.validated_data['user'].username}])
+            return Response({'token': token.key,'username':serializer.validated_data['user'].username})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 obtain_expiring_auth_token = ObtainExpiringAuthToken.as_view()
